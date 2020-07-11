@@ -6,12 +6,19 @@ from selenium.webdriver.support import expected_conditions as EC
 import time
 	
 def drive_application():
+	port = 8091
+	host = "127.0.0.1"
 	profile = webdriver.FirefoxProfile()
 	profile.set_preference("network.proxy.type", 1)
-	profile.set_preference("network.proxy.http", "127.0.0.1")
-	profile.set_preference("network.proxy.http_port", 8080)
-	profile.set_preference("network.proxy.ssl", "127.0.0.1")
-	profile.set_preference("network.proxy.ssl_port", 8080)
+	profile.set_preference("network.proxy.http", host)
+	profile.set_preference("network.proxy.http_port", port)
+	profile.set_preference("network.proxy.https", host)
+	profile.set_preference("network.proxy.https_port", port)
+	profile.set_preference("network.proxy.ssl", host)
+	profile.set_preference("network.proxy.ssl_port", port)
+	profile.set_preference("network.proxy.ftp", host)
+	profile.set_preference("network.proxy.ftp_port", port)
+	
 	profile.update_preferences()
 	driver = webdriver.Firefox(firefox_profile=profile)
 	# login
@@ -35,14 +42,13 @@ def drive_application():
 	change.click()
 	element = WebDriverWait(driver, 10).until(EC.title_contains("Altoro Mutual"))
 	# view recent transactions
-	driver.get("http://testfire.net/bank/transaction.aspx")
-	element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "before")))
-	after = driver.find_element_by_name('after')
-	after.send_keys("01/01/2000")
-	before = driver.find_element_by_name('before')
-	before.send_keys("05/31/2017")
-	before.send_keys(Keys.RETURN)
-	element = WebDriverWait(driver, 10).until(EC.title_contains("500"))
+	driver.get("http://testfire.net/bank/transaction.jsp")
+	element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "startDate")))
+	startDate = driver.find_element_by_name('startDate')
+	startDate.send_keys("2020-07-10")
+	endDate = driver.find_element_by_name('endDate')
+	endDate.send_keys("2020-07-10")
+	endDate.send_keys(Keys.RETURN)
 	time.sleep(2)
 	driver.quit()
 
